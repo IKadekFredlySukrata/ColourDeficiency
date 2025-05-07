@@ -12,7 +12,7 @@ import org.example.colourdeficiency.models.model;
 import java.io.IOException;
 import java.util.Objects;
 
-public class MainController {
+public class MainPage {
 
     @FXML
     private ImageView logoImage;
@@ -37,9 +37,7 @@ public class MainController {
             Parent root = loader.load();
             Scene scene = model.getScene();
             scene.setRoot(root);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
     }
 
 

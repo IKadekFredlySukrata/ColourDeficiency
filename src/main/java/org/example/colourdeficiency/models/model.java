@@ -1,6 +1,5 @@
 package org.example.colourdeficiency.models;
 
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 
 public class model {
