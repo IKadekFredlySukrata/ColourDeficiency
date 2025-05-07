@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.net.URL;
 import java.util.Objects;
 
 public class HelloController {
@@ -20,9 +21,7 @@ public class HelloController {
         System.out.println("initialize() called");
 
         try {
-            Image image = new Image(Objects.requireNonNull(
-                    getClass().getResource("/resource/images/testimage.jpeg")
-            ).toExternalForm());
+            Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/images/testimage.jpeg")).toExternalForm());
             logoImage.setImage(image);
         } catch (Exception e) {
             System.err.println("Failed to load logo image: " + e.getMessage());
