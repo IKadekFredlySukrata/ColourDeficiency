@@ -10,4 +10,8 @@ module org.example.colourdeficiency {
 
     opens org.example.colourdeficiency to javafx.fxml;
     exports org.example.colourdeficiency;
+    exports org.example.colourdeficiency.controller;
+    opens org.example.colourdeficiency.controller to javafx.fxml;
+    exports org.example.colourdeficiency.models;
+    opens org.example.colourdeficiency.models to javafx.fxml;
 }

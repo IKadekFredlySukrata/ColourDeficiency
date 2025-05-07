@@ -1,20 +1,21 @@
-package org.example.colourdeficiency;
+package org.example.colourdeficiency.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.example.colourdeficiency.Main;
+import org.example.colourdeficiency.models.model;
 
-import java.net.URL;
+import java.io.IOException;
 import java.util.Objects;
 
-public class HelloController {
+public class MainController {
 
     @FXML
     private ImageView logoImage;
-
-    @FXML
-    private Label welcomeText; // Optional, not used in current FXML
 
     @FXML
     public void initialize() {
@@ -28,11 +29,19 @@ public class HelloController {
         }
     }
 
+
     @FXML
     private void onSimulateClick() {
-        System.out.println("Simulate Color Blindness clicked");
-        // TODO: Navigate to simulation screen
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page.fxml"));
+            Parent root = loader.load();
+            Scene scene = model.getScene();
+            scene.setRoot(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
 
     @FXML
     private void onAssistClick() {
