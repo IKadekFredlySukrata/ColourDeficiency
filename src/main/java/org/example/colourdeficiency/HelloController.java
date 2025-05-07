@@ -8,7 +8,18 @@ public class HelloController {
     private Label welcomeText;
 
     @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Im niggers");
+    private void onSimulateClick() {
+        // Navigate to simulation screen
     }
+
+    @FXML
+    private void onAssistClick() {
+        // Navigate to assist tools
+    }
+
+    @FXML
+    private void onSettingsClick() {
+        // Open settings
+    }
+
 }
