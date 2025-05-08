@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.colourdeficiency.controller.MainPage">
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.colourdeficiency.controller.MainPage">
 
     <padding>
         <Insets bottom="30.0" left="20.0" right="20.0" top="30.0" />
@@ -14,7 +14,7 @@
 
     <!-- Logo Image -->
     <ImageView fx:id="logoImage" fitHeight="150" fitWidth="150" preserveRatio="true" />
-   <Separator prefWidth="307.0" />
+   <Separator opacity="0.0" prefWidth="307.0" />
 
     <!-- App Title -->
     <Label text="Color Deficiency Simulator">

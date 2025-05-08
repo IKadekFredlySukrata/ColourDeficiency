@@ -32,8 +32,9 @@ public class MainPage {
 
     @FXML
     private void onSimulateClick() {
+        System.out.println("Test Page Button clicked");
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page-2.fxml"));
             Parent root = loader.load();
             Scene scene = model.getScene();
             scene.setRoot(root);
@@ -43,7 +44,7 @@ public class MainPage {
 
     @FXML
     private void onAssistClick() {
-        System.out.println("Assist Tools clicked");
+        System.out.println("Simulation Page clicked");
         // TODO: Navigate to assist tools screen
     }
 

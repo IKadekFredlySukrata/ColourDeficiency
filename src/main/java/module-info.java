@@ -7,6 +7,7 @@ module org.example.colourdeficiency {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
+    requires java.desktop;
 
     opens org.example.colourdeficiency to javafx.fxml;
     exports org.example.colourdeficiency;
