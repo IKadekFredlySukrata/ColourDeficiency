@@ -1,4 +1,4 @@
-package org.example.colourdeficiency.controllers;
+package org.example.colourdeficiency.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class ImageConverter {
+    public ImageView OriimageView;
     @FXML
     private Button openButton;
     @FXML
@@ -45,6 +46,7 @@ public class ImageConverter {
             try {
                 originalImage = ImageIO.read(file);
                 imageView.setImage(new Image(file.toURI().toString()));
+                OriimageView.setImage(new Image(file.toURI().toString()));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

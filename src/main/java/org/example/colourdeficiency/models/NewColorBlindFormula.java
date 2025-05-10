@@ -1,5 +1,6 @@
 package org.example.colourdeficiency.models;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 public class NewColorBlindFormula {
@@ -32,12 +33,10 @@ public class NewColorBlindFormula {
         double[] params = getBrettelParams(type, rgb);
         double[] rgbCvd = new double[3];
 
-        // Apply matrix transformation
         rgbCvd[0] = params[0] * rgb[0] + params[1] * rgb[1] + params[2] * rgb[2];
         rgbCvd[1] = params[3] * rgb[0] + params[4] * rgb[1] + params[5] * rgb[2];
         rgbCvd[2] = params[6] * rgb[0] + params[7] * rgb[1] + params[8] * rgb[2];
 
-        // Apply severity as linear interpolation
         for (int i = 0; i < 3; i++) {
             rgbCvd[i] = rgbCvd[i] * severity + rgb[i] * (1.0 - severity);
         }
@@ -73,7 +72,7 @@ public class NewColorBlindFormula {
         };
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         int[] color = {255, 0, 0};
         System.out.println("Protanopia: " + Arrays.toString(brettel(color, "protan", 1.0)));
         System.out.println("Deuteranopia: " + Arrays.toString(brettel(color, "deutan", 1.0)));
