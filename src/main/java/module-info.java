@@ -10,6 +10,7 @@ module org.example.colourdeficiency {
     requires java.desktop;
     requires com.sun.jna;
     requires com.sun.jna.platform;
+    requires java.logging;
 
     opens org.example.colourdeficiency to javafx.fxml;
     exports org.example.colourdeficiency;
