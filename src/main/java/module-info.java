@@ -8,6 +8,8 @@ module org.example.colourdeficiency {
     requires org.kordamp.ikonli.javafx;
     requires eu.hansolo.tilesfx;
     requires java.desktop;
+    requires com.sun.jna;
+    requires com.sun.jna.platform;
 
     opens org.example.colourdeficiency to javafx.fxml;
     exports org.example.colourdeficiency;

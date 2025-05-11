@@ -32,7 +32,6 @@ public class MainPage {
 
     @FXML
     private void onSimulateClick() {
-        System.out.println("Test Page Button clicked");
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page-2.fxml"));
             Parent root = loader.load();
@@ -44,13 +43,21 @@ public class MainPage {
 
     @FXML
     private void onAssistClick() {
-        System.out.println("Simulation Page clicked");
-        // TODO: Navigate to assist tools screen
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("Stream.fxml"));
+            Parent root = loader.load();
+            Scene scene = model.getScene();
+            scene.setRoot(root);
+        } catch (IOException ignored) {}
     }
 
     @FXML
     private void onSettingsClick() {
-        System.out.println("Settings clicked");
-        // TODO: Open settings screen
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("choose-image.fxml"));
+            Parent root = loader.load();
+            Scene scene = model.getScene();
+            scene.setRoot(root);
+        } catch (IOException ignored) {}
     }
 }
