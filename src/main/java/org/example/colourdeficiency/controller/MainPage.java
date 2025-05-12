@@ -6,14 +6,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import org.example.colourdeficiency.Main;
+import org.example.colourdeficiency.models.HueToColorFX;
 import org.example.colourdeficiency.models.model;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class MainPage {
-
     @FXML
     private ImageView logoImage;
 
@@ -32,12 +37,14 @@ public class MainPage {
 
     @FXML
     private void onSimulateClick() {
-        try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page-2.fxml"));
-            Parent root = loader.load();
-            Scene scene = model.getScene();
-            scene.setRoot(root);
-        } catch (IOException ignored) {}
+        for (int i = 1; i < 5; i++) {
+            try {
+                FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page-2.fxml"));
+                Parent root = loader.load();
+                Scene scene = model.getScene();
+                scene.setRoot(root);
+            } catch (IOException ignored) {}
+        }
     }
 
 
@@ -60,4 +67,5 @@ public class MainPage {
             scene.setRoot(root);
         } catch (IOException ignored) {}
     }
+
 }
