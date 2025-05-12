@@ -21,7 +21,7 @@ public class MainPage {
         System.out.println("initialize() called");
 
         try {
-            Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/images/testimage.jpeg")).toExternalForm());
+            Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/images/menu-logo.png")).toExternalForm());
             logoImage.setImage(image);
         } catch (Exception e) {
             System.err.println("Failed to load logo image: " + e.getMessage());
@@ -53,7 +53,7 @@ public class MainPage {
     @FXML
     private void onSettingsClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("choose-image.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("setting.fxml"));
             Parent root = loader.load();
             Scene scene = Variable.getScene();
             scene.setRoot(root);

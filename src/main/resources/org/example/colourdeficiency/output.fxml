@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="CENTER" prefHeight="200" prefWidth="300" spacing="10" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.colourdeficiency.controller.OutputController">
+    <Label fx:id="resultLabel" style="-fx-font-size: 16px;" wrapText="true" />
+   <Separator opacity="0.0" prefHeight="111.0" prefWidth="300.0" />
+   <HBox alignment="TOP_CENTER" prefHeight="100.0" prefWidth="200.0">
+      <Button onAction="#Back" prefWidth="220" text="Back To Menu" />
+      <Separator opacity="0.0" orientation="VERTICAL" prefHeight="72.0" prefWidth="72.0" />
+      <Button onAction="#LUT" prefWidth="220" text="Download Output .cube" />
+      <Separator opacity="0.0" orientation="VERTICAL" prefHeight="72.0" prefWidth="72.0" />
+      <Button onAction="#Simulate" prefWidth="220" text="Simulate" />
+   </HBox>
+</VBox>

@@ -3,14 +3,23 @@ package org.example.colourdeficiency.controller;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import org.example.colourdeficiency.Main;
 import org.example.colourdeficiency.models.HueToColorFX;
+import org.example.colourdeficiency.models.Variable;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +39,12 @@ public class TestPage {
     List<Integer> RGBSeverity = new ArrayList<>();
 
     private List<ImageView> imageViews;
+    private final javafx.scene.shape.Rectangle colorFollower = new javafx.scene.shape.Rectangle(30, 30);
+    @FXML
+    private StackPane root;
+
+    @FXML
+    private Pane overlay;
 
     @FXML
     private void initialize() {
@@ -41,15 +56,32 @@ public class TestPage {
                 imageView13, imageView14, imageView15, imageView16
         );
 
-        // Add visual indicators to anchors
         imageViews.get(0).setStyle("-fx-border-color: gray; -fx-border-width: 2;");
         imageViews.get(imageViews.size() - 1).setStyle("-fx-border-color: gray; -fx-border-width: 2;");
+        colorFollower.setArcWidth(10);
+        colorFollower.setArcHeight(10);
+        colorFollower.setStroke(Color.GRAY);
+        colorFollower.setStrokeWidth(1.5);
+        colorFollower.setVisible(false);
+        overlay.getChildren().add(colorFollower);
+        overlay.setMouseTransparent(true);
 
+        root.setOnMouseMoved(event -> {
+            if (colorFollower.isVisible()) {
+                double localX = event.getX();
+                double localY = event.getY();
+                colorFollower.setLayoutX(localX - 15);
+                colorFollower.setLayoutY(localY - 15);
+            }
+        });
+
+        // Main test loop
         new Thread(() -> {
-            for (int i = 1; i < 5; i++) {
+            for (int i = 1; i <= 4; i++) {
                 List<Color> RGBValue = HueToColorFX.getColorRGB(i);
                 List<Color> RandomizeRGBValue = HueToColorFX.getRandomizedTray(RGBValue);
 
+                // Set images for the current test
                 Platform.runLater(() -> {
                     for (int j = 0; j < RandomizeRGBValue.size(); j++) {
                         Color firstColor = RandomizeRGBValue.get(j);
@@ -63,27 +95,47 @@ public class TestPage {
                     }
                 });
 
+                // Wait for user input
+                waitForButtonPress();
+
+                // Record severity
+                RGBSeverity.add(getUserSeverity(RGBValue, getUserResult()));
+
+                // Update button text for the final test
                 if (i == 4) {
-                    RGBSeverity.add(getUserSeverity(RGBValue, getUserResult()));
-                    for (Integer integer : RGBSeverity) {
-                        System.out.println(integer);
-                    }
-                    String result = determineDeficiency(RGBSeverity);
-                    System.out.println(result);
-                } else {
-                    waitForButtonPress();
-                    RGBSeverity.add(getUserSeverity(RGBValue, getUserResult()));
+                    Platform.runLater(() -> nextButton.setText("Show Result"));
                 }
             }
-            System.out.println("Loop finished.");
+
+            // Display the final result
+            String result = determineDeficiency(RGBSeverity);
+            System.out.println(result);
+
         }).start();
     }
 
     @FXML
     private void onNextClicked() {
-        System.out.println("Next button pressed!");
-        continueFlag.set(true);
+        if ("Show Result".equals(nextButton.getText())) {
+            try {
+                FXMLLoader loader = new FXMLLoader(Main.class.getResource("output.fxml"));
+                Parent root = loader.load();
+
+                // Pass the result to the OutputController
+                OutputController controller = loader.getController();
+                String result = determineDeficiency(RGBSeverity);
+                controller.setResult(result);
+
+                Scene scene = Variable.getScene();
+                scene.setRoot(root);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            continueFlag.set(true);
+        }
     }
+
 
     private void waitForButtonPress() {
         continueFlag.set(false);
@@ -107,27 +159,51 @@ public class TestPage {
 
             if (firstSelected == null) {
                 firstSelected = iv;
-                iv.setStyle("-fx-border-color: blue; -fx-border-width: 3;");
+                iv.setStyle("-fx-effect: dropshadow(gaussian, blue, 12, 0.4, 0, 0); -fx-border-color: blue; -fx-border-width: 3;");
+
+                Color pickedColor = iv.getImage().getPixelReader().getColor(0, 0);
+                colorFollower.setFill(pickedColor);
+                colorFollower.setVisible(true);
             } else if (firstSelected == iv) {
+                // Deselect same image
                 iv.setStyle("");
                 firstSelected = null;
+                colorFollower.setVisible(false);
             } else {
                 if (isAnchor(firstSelected)) {
                     firstSelected.setStyle("");
                     firstSelected = null;
+                    colorFollower.setVisible(true);
                     return;
                 }
 
+                // Swap images
                 Image temp = iv.getImage();
                 iv.setImage(firstSelected.getImage());
                 firstSelected.setImage(temp);
 
-                firstSelected.setStyle("");
-                iv.setStyle("");
+                // Visual feedback on swap (flash green border)
+                iv.setStyle("-fx-border-color: green; -fx-border-width: 3;");
+                firstSelected.setStyle("-fx-border-color: green; -fx-border-width: 3;");
+
+                ImageView prevSelected = firstSelected;
                 firstSelected = null;
+
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(150); // short flash
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    Platform.runLater(() -> {
+                        iv.setStyle("");
+                        prevSelected.setStyle("");
+                    });
+                }).start();
             }
         });
     }
+
 
     private List<Color> getUserResult() {
         List<Color> userResult = new ArrayList<>();
@@ -160,7 +236,7 @@ public class TestPage {
         return severity;
     }
 
-    public String determineDeficiency(List<Integer> RGBSeverity) {
+    public static String determineDeficiency(List<Integer> RGBSeverity) {
         String result = "Normal Vision";
 
         int protanSeverity = RGBSeverity.get(0);
@@ -181,7 +257,12 @@ public class TestPage {
             result = "Indeterminate, retest recommended";
         }
 
-        return result;
+        // Combine result with severity values
+
+        return String.format(
+                "Protan Severity: %d\nDeutan Severity: %d\nTritan Severity: %d\n\nDiagnosis: %s",
+                protanSeverity, deutanSeverity, tritanSeverity, result
+        );
     }
 
 }
