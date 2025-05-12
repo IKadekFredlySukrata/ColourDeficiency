@@ -53,5 +53,5 @@
         </children>
     </GridPane>
    <Separator opacity="0.0" prefHeight="50.0" prefWidth="200.0" />
-   <Button mnemonicParsing="false" text="Next" />
+   <Button fx:id="nextButton" text="Next" onAction="#onNextClicked" />
 </VBox>
