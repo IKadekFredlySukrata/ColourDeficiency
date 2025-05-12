@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import org.example.colourdeficiency.models.model;
+import org.example.colourdeficiency.models.Variable;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class Main extends Application {
         stage.setTitle("ColorBlind Simulator");
         stage.setScene(scene);
         stage.show();
-        model.UpdateScene(scene);
+        Variable.UpdateScene(scene);
     }
 
     public static void main(String[] args) {

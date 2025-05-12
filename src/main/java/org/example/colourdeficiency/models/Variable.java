@@ -2,7 +2,7 @@ package org.example.colourdeficiency.models;
 
 import javafx.scene.Scene;
 
-public class model {
+public class Variable {
     static Scene scene;
     public static Scene getScene(){
         return scene;
