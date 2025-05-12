@@ -37,14 +37,12 @@ public class MainPage {
 
     @FXML
     private void onSimulateClick() {
-        for (int i = 1; i < 5; i++) {
-            try {
-                FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page-2.fxml"));
-                Parent root = loader.load();
-                Scene scene = model.getScene();
-                scene.setRoot(root);
-            } catch (IOException ignored) {}
-        }
+        try {
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page-2.fxml"));
+            Parent root = loader.load();
+            Scene scene = model.getScene();
+            scene.setRoot(root);
+        } catch (IOException ignored) {}
     }
 
 
