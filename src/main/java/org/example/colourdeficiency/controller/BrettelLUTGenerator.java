@@ -37,4 +37,3 @@ public class BrettelLUTGenerator {
         generate("tritanopia_1.0.cube", "tritan", 1.0);
     }
 }
-

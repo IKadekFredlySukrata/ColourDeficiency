@@ -1,5 +1,6 @@
 package org.example.colourdeficiency.controller;
 
+import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.User32;
 import com.sun.jna.platform.win32.WinDef;
@@ -9,11 +10,11 @@ import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 import org.example.colourdeficiency.models.NewColorBlindFormula;
 
@@ -25,17 +26,18 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.concurrent.*;
-
 import java.util.logging.Logger;
 
-public class ScreenFilterApp extends Application {
+public class ScreenFilterApp {
 
     private static final Logger LOGGER = Logger.getLogger(ScreenFilterApp.class.getName());
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     private ImageView imageView;
-    private Stage stage;
     private Robot robot;
-
+    private static String type = "protan";
+    private static double severity = 1.0;
+    private boolean clickThroughEnabled = true;
+    Rectangle2D bounds = getUnionScreenBounds();
     public ScreenFilterApp() throws AWTException {
         try {
             this.robot = new Robot();
@@ -44,12 +46,21 @@ public class ScreenFilterApp extends Application {
         }
     }
 
-    @Override
-    public void start(Stage stage) {
-        this.stage = stage;
+    public void start(Stage stage, int Capture) {
+        switch (Capture){
+            case 0:
+                severity = ImageConverter.getSeverity();
+                type = ImageConverter.getType();
+                break;
+            case 1:
+                severity = ImageConverter.getYourSeverity();
+                type = ImageConverter.getYourType();
+                break;
+        }
         this.imageView = new ImageView();
         Pane root = new Pane(imageView);
         root.setMouseTransparent(true);
+
         Scene scene = new Scene(root);
         scene.setFill(Color.TRANSPARENT);
 
@@ -60,23 +71,42 @@ public class ScreenFilterApp extends Application {
         stage.setFullScreenExitHint("");
         stage.setTitle("ScreenFilterApp");
 
-        Rectangle2D bounds = getUnionScreenBounds();
         stage.setX(bounds.getMinX());
         stage.setY(bounds.getMinY());
         stage.setWidth(bounds.getWidth());
         stage.setHeight(bounds.getHeight());
 
+        scene.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.F12) {
+                clickThroughEnabled = !clickThroughEnabled;
+                LOGGER.info("Click-through toggled: " + clickThroughEnabled);
+                makeWindowClickThrough("ScreenFilterApp");
+            }
+        });
+
+        stage.setOnCloseRequest(event -> {
+            try {
+                executor.shutdownNow();
+                if (!executor.awaitTermination(2, TimeUnit.SECONDS)) {
+                    LOGGER.warning("Executor did not terminate in the specified time.");
+                }
+            } catch (InterruptedException ex) {
+                logException("Executor termination interrupted", ex);
+            } finally {
+                imageView.setImage(null);
+                stage.hide();
+                System.out.println("Overlay closed and executor shut down.");
+            }
+        });
+
         stage.show();
-
         Platform.runLater(() -> makeWindowClickThrough("ScreenFilterApp"));
-
         startCaptureLoop(bounds);
     }
 
     private Rectangle2D getUnionScreenBounds() {
         double minX = Double.MAX_VALUE, minY = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE, maxY = Double.MIN_VALUE;
-
         for (Screen screen : Screen.getScreens()) {
             Rectangle2D bounds = screen.getBounds();
             minX = Math.min(minX, bounds.getMinX());
@@ -84,19 +114,20 @@ public class ScreenFilterApp extends Application {
             maxX = Math.max(maxX, bounds.getMaxX());
             maxY = Math.max(maxY, bounds.getMaxY());
         }
-
         return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
     }
 
     private void startCaptureLoop(Rectangle2D screenBounds) {
         executor.scheduleAtFixedRate(() -> {
-            CompletableFuture
-                    .supplyAsync(() -> captureAndFilterScreen(screenBounds))
-                    .thenAccept(filteredImage -> {
-                        if (filteredImage != null) {
-                            Platform.runLater(() -> imageView.setImage(filteredImage));
-                        }
-                    });
+            if (!executor.isShutdown()) {
+                CompletableFuture
+                        .supplyAsync(() -> captureAndFilterScreen(bounds))
+                        .thenAccept(filteredImage -> {
+                            if (filteredImage != null) {
+                                Platform.runLater(() -> imageView.setImage(filteredImage));
+                            }
+                        });
+            }
         }, 0, 50, TimeUnit.MILLISECONDS);
     }
 
@@ -105,8 +136,7 @@ public class ScreenFilterApp extends Application {
             BufferedImage capture = robot.createScreenCapture(
                     new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY(),
                             (int) bounds.getWidth(), (int) bounds.getHeight()));
-
-            BufferedImage filtered = applyColorBlindFilterBuffered(capture, "protan", 1.0);
+            BufferedImage filtered = applyColorBlindFilterBuffered(capture, type, severity);
             return convertBufferedToWritable(filtered);
         } catch (Exception e) {
             logException("Screen capture failed", e);
@@ -114,23 +144,13 @@ public class ScreenFilterApp extends Application {
         }
     }
 
-    private Image bufferedImageToFXImage(BufferedImage image) {
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            ImageIO.write(image, "png", os);
-            return new Image(new ByteArrayInputStream(os.toByteArray()));
-        } catch (Exception e) {
-            logException("Image conversion failed", e);
-            return null;
-        }
-    }
     private WritableImage convertBufferedToWritable(BufferedImage image) {
         WritableImage fxImage = new WritableImage(image.getWidth(), image.getHeight());
         PixelWriter writer = fxImage.getPixelWriter();
-
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {
                 int argb = image.getRGB(x, y);
-                javafx.scene.paint.Color fxColor = javafx.scene.paint.Color.rgb(
+                Color fxColor = Color.rgb(
                         (argb >> 16) & 0xFF,
                         (argb >> 8) & 0xFF,
                         argb & 0xFF,
@@ -139,7 +159,6 @@ public class ScreenFilterApp extends Application {
                 writer.setColor(x, y, fxColor);
             }
         }
-
         return fxImage;
     }
 
@@ -147,15 +166,21 @@ public class ScreenFilterApp extends Application {
         int width = image.getWidth();
         int height = image.getHeight();
         BufferedImage output = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 int argb = image.getRGB(x, y);
                 int r = (argb >> 16) & 0xFF;
                 int g = (argb >> 8) & 0xFF;
                 int b = argb & 0xFF;
+                int[] filtered;
 
-                int[] filtered = NewColorBlindFormula.brettel(new int[]{r, g, b}, type, severity);
+                if ("achromatopsia".equalsIgnoreCase(type)) {
+                    int gray = (int)(0.299 * r + 0.587 * g + 0.114 * b);
+                    filtered = new int[]{gray, gray, gray};
+                } else {
+                    filtered = NewColorBlindFormula.brettel(new int[]{r, g, b}, type, severity);
+                }
+
                 int newArgb = (0xFF << 24) | (filtered[0] << 16) | (filtered[1] << 8) | filtered[2];
                 output.setRGB(x, y, newArgb);
             }
@@ -163,29 +188,53 @@ public class ScreenFilterApp extends Application {
         return output;
     }
 
-
-    private void makeWindowClickThrough(String title) {
+    private void makeWindowClickThrough(String windowTitle) {
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
-                WinDef.HWND hwnd = User32.INSTANCE.FindWindow(null, title);
-                if (hwnd == null) {
-                    LOGGER.warning("Window not found: " + title);
-                    return;
+
+                final int[] windowFound = {0};
+                User32.INSTANCE.EnumWindows((hwnd, data) -> {
+                    char[] windowText = new char[512];
+                    User32.INSTANCE.GetWindowText(hwnd, windowText, 512);
+                    String wText = Native.toString(windowText);
+                    System.out.println("Window: " + wText);
+
+                    if (wText != null && wText.contains(windowTitle)) {
+                        makeClickThrough(hwnd);
+                        windowFound[0]++;
+                        return false;
+                    }
+                    return true;
+                }, null);
+
+                if (windowFound[0] == 0) {
+                    LOGGER.warning("Window not found via enumeration.");
                 }
 
-                int exStyle = User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE);
-                exStyle |= WinUser.WS_EX_LAYERED | WinUser.WS_EX_TRANSPARENT;
-                User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, exStyle);
-
-                WinDef.HWND HWND_TOPMOST = new WinDef.HWND(Pointer.createConstant(-1));
-                User32.INSTANCE.SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0,
-                        WinUser.SWP_NOMOVE | WinUser.SWP_NOSIZE | WinUser.SWP_NOACTIVATE);
             } catch (Exception e) {
                 logException("Failed to set click-through", e);
             }
         }).start();
     }
+
+
+    private void makeClickThrough(WinDef.HWND hwnd) {
+        int exStyle = User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE);
+        if (clickThroughEnabled) {
+            exStyle |= WinUser.WS_EX_LAYERED | WinUser.WS_EX_TRANSPARENT;
+            LOGGER.info("Click-through ENABLED for: " + hwnd);
+        } else {
+            exStyle &= ~WinUser.WS_EX_TRANSPARENT;
+            LOGGER.info("Click-through DISABLED for: " + hwnd);
+        }
+
+        User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, exStyle);
+
+        User32.INSTANCE.SetWindowPos(hwnd, new WinDef.HWND(Pointer.createConstant(-1)), 0, 0, 0, 0,
+                WinUser.SWP_NOMOVE | WinUser.SWP_NOSIZE | WinUser.SWP_NOACTIVATE | WinUser.SWP_NOZORDER);
+    }
+
 
     private void logException(String message, Exception e) {
         StringWriter sw = new StringWriter();
@@ -193,13 +242,4 @@ public class ScreenFilterApp extends Application {
         LOGGER.severe(message + ":\n" + sw.toString());
     }
 
-    @Override
-    public void stop() throws Exception {
-        executor.shutdownNow();
-        super.stop();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
-    }
 }

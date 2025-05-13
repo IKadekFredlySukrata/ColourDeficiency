@@ -18,7 +18,7 @@ public class MainPage {
 
     @FXML
     public void initialize() {
-        System.out.println("initialize() called");
+//        System.out.println("initialize() called");
 
         try {
             Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/images/menu-logo.png")).toExternalForm());
@@ -43,7 +43,7 @@ public class MainPage {
     @FXML
     private void onAssistClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("Stream.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("choose-image.fxml"));
             Parent root = loader.load();
             Scene scene = Variable.getScene();
             scene.setRoot(root);

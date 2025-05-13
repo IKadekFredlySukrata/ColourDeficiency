@@ -11,10 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import org.example.colourdeficiency.Main;
 import org.example.colourdeficiency.models.HueToColorFX;
 import org.example.colourdeficiency.models.Variable;
@@ -48,7 +45,7 @@ public class TestPage {
 
     @FXML
     private void initialize() {
-        System.out.println("TestPage initialized");
+//        System.out.println("TestPage initialized");
 
         imageViews = List.of(
                 imageView1, imageView2, imageView3, imageView4, imageView5, imageView6,
@@ -121,7 +118,6 @@ public class TestPage {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("output.fxml"));
                 Parent root = loader.load();
 
-                // Pass the result to the OutputController
                 OutputController controller = loader.getController();
                 String result = determineDeficiency(RGBSeverity);
                 controller.setResult(result);
@@ -238,31 +234,45 @@ public class TestPage {
 
     public static String determineDeficiency(List<Integer> RGBSeverity) {
         String result = "Normal Vision";
-
+        OutputController controller;
+        String Type;
         int protanSeverity = RGBSeverity.get(0);
         int deutanSeverity = RGBSeverity.get(1);
         int tritanSeverity = RGBSeverity.get(2);
 
         if (protanSeverity > 3 && protanSeverity > deutanSeverity && protanSeverity > tritanSeverity) {
             result = "Protanomaly / Protanopia suspected";
+            Type = "protan";
         } else if (deutanSeverity > 3 && deutanSeverity > protanSeverity && deutanSeverity > tritanSeverity) {
             result = "Deuteranomaly / Deuteranopia suspected";
+            Type = "deutan";
         } else if (tritanSeverity > 3 && tritanSeverity > protanSeverity && tritanSeverity > deutanSeverity) {
             result = "Tritanomaly / Tritanopia suspected";
-        } else if (protanSeverity > 3 && deutanSeverity > 3) {
+            Type = "tritan";
+        } else if (protanSeverity > 3 && deutanSeverity > 3 && tritanSeverity >3) {
             result = "Possible Red-Green Color Blindness (Mixed Protan & Deutan)";
+            Type = "Achromatopsia";
         } else if (protanSeverity <= 3 && deutanSeverity <= 3 && tritanSeverity <= 3) {
             result = "Likely Normal Vision";
+            Type = "Normal";
         } else {
             result = "Indeterminate, retest recommended";
+            Type = "Normal";
         }
-
-        // Combine result with severity values
+        double protanSev = normalizeSeverity(protanSeverity);
+        double deutanSev = normalizeSeverity(deutanSeverity);
+        double tritanSev = normalizeSeverity(tritanSeverity);
+        OutputController.setPSeverity(protanSev);
+        OutputController.setDSeverity(deutanSev);
+        OutputController.setTSeverity(tritanSev);
+        OutputController.setType(Type);
 
         return String.format(
-                "Protan Severity: %d\nDeutan Severity: %d\nTritan Severity: %d\n\nDiagnosis: %s",
-                protanSeverity, deutanSeverity, tritanSeverity, result
+                "Protan Severity: %f\nDeutan Severity: %f\nTritan Severity: %f\n\nDiagnosis: %s",
+                protanSev, deutanSev, tritanSev, result
         );
     }
-
+    private static double normalizeSeverity(int rawSeverity) {
+        return Math.min(Math.max(rawSeverity / 14.0, 0.0), 1.0);
+    }
 }
