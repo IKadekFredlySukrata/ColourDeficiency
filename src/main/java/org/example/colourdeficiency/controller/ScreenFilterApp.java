@@ -1,31 +1,27 @@
 package org.example.colourdeficiency.controller;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.User32;
-import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinUser;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.image.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.example.colourdeficiency.models.NewColorBlindFormula;
+import org.example.colourdeficiency.models.Formula;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class ScreenFilterApp {
@@ -38,7 +34,7 @@ public class ScreenFilterApp {
     private static double severity = 1.0;
     private boolean clickThroughEnabled = true;
     Rectangle2D bounds = getUnionScreenBounds();
-    public ScreenFilterApp() throws AWTException {
+    public ScreenFilterApp() {
         try {
             this.robot = new Robot();
         } catch (AWTException e) {
@@ -80,7 +76,6 @@ public class ScreenFilterApp {
             if (event.getCode() == KeyCode.F12) {
                 clickThroughEnabled = !clickThroughEnabled;
                 LOGGER.info("Click-through toggled: " + clickThroughEnabled);
-                makeWindowClickThrough("ScreenFilterApp");
             }
         });
 
@@ -94,14 +89,12 @@ public class ScreenFilterApp {
                 logException("Executor termination interrupted", ex);
             } finally {
                 imageView.setImage(null);
-                stage.hide();
-                System.out.println("Overlay closed and executor shut down.");
+                stage.close();
             }
         });
 
         stage.show();
-        Platform.runLater(() -> makeWindowClickThrough("ScreenFilterApp"));
-        startCaptureLoop(bounds);
+        startCaptureLoop();
     }
 
     private Rectangle2D getUnionScreenBounds() {
@@ -117,7 +110,7 @@ public class ScreenFilterApp {
         return new Rectangle2D(minX, minY, maxX - minX, maxY - minY);
     }
 
-    private void startCaptureLoop(Rectangle2D screenBounds) {
+    private void startCaptureLoop() {
         executor.scheduleAtFixedRate(() -> {
             if (!executor.isShutdown()) {
                 CompletableFuture
@@ -178,7 +171,7 @@ public class ScreenFilterApp {
                     int gray = (int)(0.299 * r + 0.587 * g + 0.114 * b);
                     filtered = new int[]{gray, gray, gray};
                 } else {
-                    filtered = NewColorBlindFormula.brettel(new int[]{r, g, b}, type, severity);
+                    filtered = Formula.brettel(new int[]{r, g, b}, type, severity);
                 }
 
                 int newArgb = (0xFF << 24) | (filtered[0] << 16) | (filtered[1] << 8) | filtered[2];
@@ -188,58 +181,10 @@ public class ScreenFilterApp {
         return output;
     }
 
-    private void makeWindowClickThrough(String windowTitle) {
-        new Thread(() -> {
-            try {
-                Thread.sleep(1000);
-
-                final int[] windowFound = {0};
-                User32.INSTANCE.EnumWindows((hwnd, data) -> {
-                    char[] windowText = new char[512];
-                    User32.INSTANCE.GetWindowText(hwnd, windowText, 512);
-                    String wText = Native.toString(windowText);
-                    System.out.println("Window: " + wText);
-
-                    if (wText != null && wText.contains(windowTitle)) {
-                        makeClickThrough(hwnd);
-                        windowFound[0]++;
-                        return false;
-                    }
-                    return true;
-                }, null);
-
-                if (windowFound[0] == 0) {
-                    LOGGER.warning("Window not found via enumeration.");
-                }
-
-            } catch (Exception e) {
-                logException("Failed to set click-through", e);
-            }
-        }).start();
-    }
-
-
-    private void makeClickThrough(WinDef.HWND hwnd) {
-        int exStyle = User32.INSTANCE.GetWindowLong(hwnd, WinUser.GWL_EXSTYLE);
-        if (clickThroughEnabled) {
-            exStyle |= WinUser.WS_EX_LAYERED | WinUser.WS_EX_TRANSPARENT;
-            LOGGER.info("Click-through ENABLED for: " + hwnd);
-        } else {
-            exStyle &= ~WinUser.WS_EX_TRANSPARENT;
-            LOGGER.info("Click-through DISABLED for: " + hwnd);
-        }
-
-        User32.INSTANCE.SetWindowLong(hwnd, WinUser.GWL_EXSTYLE, exStyle);
-
-        User32.INSTANCE.SetWindowPos(hwnd, new WinDef.HWND(Pointer.createConstant(-1)), 0, 0, 0, 0,
-                WinUser.SWP_NOMOVE | WinUser.SWP_NOSIZE | WinUser.SWP_NOACTIVATE | WinUser.SWP_NOZORDER);
-    }
-
-
     private void logException(String message, Exception e) {
         StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw));
-        LOGGER.severe(message + ":\n" + sw.toString());
+        LOGGER.severe(message + ":\n" + sw);
     }
 
 }

@@ -1,6 +1,5 @@
 package org.example.colourdeficiency.controller;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,8 +22,16 @@ public class OutputController {
     private double Severity;
     public void initialize() {
     }
-    public void setResult(String result) {
+    public void setResult() {
         conclusion();
+        if (resultLabel != null) {
+            String displayText = String.format(
+                    "Diagnosis: %s\nSeverity: %.2f",
+                    Type.equals("normal") ? "Normal Vision" : Type.substring(0, 1).toUpperCase() + Type.substring(1),
+                    Severity
+            );
+            resultLabel.setText(displayText);
+        }
     }
     public static void setPSeverity(double Pseverity){
         PSeverity = Pseverity;
@@ -46,8 +53,9 @@ public class OutputController {
             case "tritan" -> Severity = TSeverity;
             case null, default -> Type = "normal";
         }
+
     }
-    public void Back(ActionEvent actionEvent) {
+    public void Back() {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("main-view.fxml"));
             Parent root = loader.load();
@@ -56,7 +64,7 @@ public class OutputController {
         } catch (IOException ignored) {}
     }
 
-    public void LUT(ActionEvent actionEvent) throws IOException {
+    public void LUT() {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("File Name Input");
         dialog.setHeaderText("Enter File Name");
@@ -64,15 +72,16 @@ public class OutputController {
 
         Optional<String> result = dialog.showAndWait();
         result.ifPresent(fileName -> {
+            fileName = fileName + ".cube";
             try {
-                BrettelLUTGenerator.generate(fileName, Type, Severity);
+                LUTGenerator.generate(fileName, Type, Severity);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-    public void Simulate(ActionEvent actionEvent) {
+    public void Simulate() {
         ImageConverter.setSeverity(Severity);
         ImageConverter.setType(Type);
         try {

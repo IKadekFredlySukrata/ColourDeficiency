@@ -11,11 +11,10 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.colourdeficiency.Main;
-import org.example.colourdeficiency.models.NewColorBlindFormula;
+import org.example.colourdeficiency.models.Formula;
 import org.example.colourdeficiency.models.Variable;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +92,7 @@ public class ImageConverter {
                 int r = (rgb >> 16) & 0xFF;
                 int g = (rgb >> 8) & 0xFF;
                 int b = rgb & 0xFF;
-                int[] newRgb = NewColorBlindFormula.brettel(new int[]{r, g, b}, type, Severity);
+                int[] newRgb = Formula.brettel(new int[]{r, g, b}, type, Severity);
                 int newColor = (newRgb[0] << 16) | (newRgb[1] << 8) | newRgb[2];
                 processedImage.setRGB(x, y, newColor);
             }
@@ -120,7 +119,7 @@ public class ImageConverter {
                 int r = (rgb >> 16) & 0xFF;
                 int g = (rgb >> 8) & 0xFF;
                 int b = rgb & 0xFF;
-                int[] newRgb = NewColorBlindFormula.monochrome_with_severity(new int[]{r, g, b}, Severity);
+                int[] newRgb = Formula.monochrome_with_severity(new int[]{r, g, b}, Severity);
                 int newColor = (newRgb[0] << 16) | (newRgb[1] << 8) | newRgb[2];
                 processedImage.setRGB(x, y, newColor);
             }
@@ -157,11 +156,11 @@ public class ImageConverter {
         YType = type;
     }
 
-    public void Custom() throws AWTException {
+    public void Custom() {
         new ScreenFilterApp().start(new Stage(), 0);
     }
 
-    public void Your() throws AWTException {
+    public void Your() {
         new ScreenFilterApp().start(new Stage(), 1);
     }
 

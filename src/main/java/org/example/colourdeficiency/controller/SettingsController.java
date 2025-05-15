@@ -1,15 +1,11 @@
 package org.example.colourdeficiency.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Button;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ComboBox;
 import javafx.stage.Stage;
-import javafx.scene.Node;
-
 import org.example.colourdeficiency.Main;
 import org.example.colourdeficiency.models.Variable;
 
@@ -87,7 +83,7 @@ public class SettingsController {
     }
 
     @FXML
-    private void handleBackToMenu(ActionEvent event) {
+    private void handleBackToMenu() {
         try {
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("main-view.fxml"));
             Parent root = loader.load();

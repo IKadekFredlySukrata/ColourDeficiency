@@ -18,21 +18,16 @@ public class MainPage {
 
     @FXML
     public void initialize() {
-//        System.out.println("initialize() called");
-
         try {
             Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/images/menu-logo.png")).toExternalForm());
             logoImage.setImage(image);
-        } catch (Exception e) {
-            System.err.println("Failed to load logo image: " + e.getMessage());
-        }
+        } catch (Exception ignore) {}
     }
-
 
     @FXML
     private void onSimulateClick() {
         try {
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page-2.fxml"));
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("test-page.fxml"));
             Parent root = loader.load();
             Scene scene = Variable.getScene();
             scene.setRoot(root);

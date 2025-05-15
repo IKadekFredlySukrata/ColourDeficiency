@@ -120,13 +120,11 @@ public class TestPage {
 
                 OutputController controller = loader.getController();
                 String result = determineDeficiency(RGBSeverity);
-                controller.setResult(result);
+                controller.setResult();
 
                 Scene scene = Variable.getScene();
                 scene.setRoot(root);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException ignore) {}
         } else {
             continueFlag.set(true);
         }
@@ -226,15 +224,12 @@ public class TestPage {
                     severity++;
                 }
             }
-        } else {
-            System.out.println("Some value is missing");
         }
         return severity;
     }
 
     public static String determineDeficiency(List<Integer> RGBSeverity) {
-        String result = "Normal Vision";
-        OutputController controller;
+        String result;
         String Type;
         int protanSeverity = RGBSeverity.get(0);
         int deutanSeverity = RGBSeverity.get(1);
@@ -252,7 +247,7 @@ public class TestPage {
         } else if (protanSeverity > 3 && deutanSeverity > 3 && tritanSeverity >3) {
             result = "Possible Red-Green Color Blindness (Mixed Protan & Deutan)";
             Type = "Achromatopsia";
-        } else if (protanSeverity <= 3 && deutanSeverity <= 3 && tritanSeverity <= 3) {
+        } else if (protanSeverity <= 3 && deutanSeverity <= 3) {
             result = "Likely Normal Vision";
             Type = "Normal";
         } else {
