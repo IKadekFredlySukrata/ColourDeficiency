@@ -6,55 +6,43 @@
 
 <VBox alignment="CENTER" prefWidth="600.0" spacing="10" style="-fx-padding: 20;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.colourdeficiency.controller.ImageConverter">
     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-        <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                <children>
-                    <Label text="Your Result :" />
-                    <ImageView fx:id="yourView" fitHeight="250" preserveRatio="true" />
-                </children>
-            </VBox>
-            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="534.0" prefWidth="25.0" />
-            <VBox alignment="CENTER" prefHeight="500.0" prefWidth="213.0">
-                <children>
-                    <Label text="Original Image :" />
-                    <ImageView fx:id="OriimageView" fitHeight="250" preserveRatio="true" />
-                    <Label text="Other view :" />
-                    <ImageView fx:id="imageView" fitHeight="250" preserveRatio="true" />
-                </children>
-            </VBox>
-        </children>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+            <Label text="Your Result :"/>
+            <ImageView fx:id="yourView" fitHeight="250" preserveRatio="true"/>
+        </VBox>
+        <Separator opacity="0.0" orientation="VERTICAL" prefHeight="534.0" prefWidth="25.0"/>
+        <VBox alignment="CENTER" prefHeight="500.0" prefWidth="213.0">
+            <Label text="Original Image :"/>
+            <ImageView fx:id="OriimageView" fitHeight="250" preserveRatio="true"/>
+            <Label text="Other view :"/>
+            <ImageView fx:id="imageView" fitHeight="250" preserveRatio="true"/>
+        </VBox>
     </HBox>
     <HBox alignment="CENTER" prefHeight="138.0" prefWidth="428.0">
-        <children>
-            <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
-                <children>
-                    <Button fx:id="openButton" text="Open Image" />
-                    <Separator opacity="0.0" prefHeight="20.0" prefWidth="200.0" />
-                    <Button onAction="#Custom" prefWidth="150.0" text="Custom Simulator" />
-                    <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0" />
-                    <Button onAction="#Your" prefWidth="150.0" text="Your Simulator" />
-                    <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0" />
-                    <Button onAction="#back" prefWidth="150.0" text="Back To Main Menu" />
-                </children>
-            </VBox>
-            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="138.0" prefWidth="58.0" />
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
-                <children>
-                    <Button fx:id="protanButton" prefWidth="150.0" text="Apply Protanopia" />
-                    <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0" />
-                    <Button fx:id="deutanButton" prefWidth="150.0" text="Apply Deuteranopia" />
-                    <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0" />
-                    <Button fx:id="tritanButton" prefWidth="150.0" text="Apply Tritanopia" />
-                    <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0" />
-                    <Button fx:id="achromaButton" prefWidth="150.0" text="Apply Achromatopsia" />
-                </children>
-            </VBox>
-            <Separator opacity="0.0" orientation="VERTICAL" prefHeight="138.0" prefWidth="58.0" />
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
-                <children>
-                    <Label text="Severity" />
-                    <Slider fx:id="severitySlider" blockIncrement="0.1" majorTickUnit="0.2" max="1.0" prefWidth="200.0" showTickLabels="true" showTickMarks="true" value="1.0" />
-                </children>
-            </VBox>
-        </children></HBox>
+        <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
+            <Button fx:id="openButton" text="Open Image"/>
+            <Separator opacity="0.0" prefHeight="20.0" prefWidth="200.0"/>
+            <Button onAction="#Custom" prefWidth="150.0" text="Custom Simulator"/>
+            <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0"/>
+            <Button onAction="#Your" prefWidth="150.0" text="Your Simulator"/>
+            <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0"/>
+            <Button onAction="#back" prefWidth="150.0" text="Back To Main Menu"/>
+        </VBox>
+        <Separator opacity="0.0" orientation="VERTICAL" prefHeight="138.0" prefWidth="58.0"/>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+            <Button fx:id="protanButton" prefWidth="150.0" text="Apply Protanopia"/>
+            <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0"/>
+            <Button fx:id="deutanButton" prefWidth="150.0" text="Apply Deuteranopia"/>
+            <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0"/>
+            <Button fx:id="tritanButton" prefWidth="150.0" text="Apply Tritanopia"/>
+            <Separator opacity="0.0" prefHeight="10.0" prefWidth="200.0"/>
+            <Button fx:id="achromaButton" prefWidth="150.0" text="Apply Achromatopsia"/>
+        </VBox>
+        <Separator opacity="0.0" orientation="VERTICAL" prefHeight="138.0" prefWidth="58.0"/>
+        <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
+            <Label text="Severity"/>
+            <Slider fx:id="severitySlider" blockIncrement="0.1" majorTickUnit="0.2" max="1.0" prefWidth="200.0"
+                    showTickLabels="true" showTickMarks="true" value="1.0"/>
+        </VBox>
+    </HBox>
 </VBox>

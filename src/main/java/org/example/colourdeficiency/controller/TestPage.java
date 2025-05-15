@@ -119,7 +119,7 @@ public class TestPage {
                 Parent root = loader.load();
 
                 OutputController controller = loader.getController();
-                String result = determineDeficiency(RGBSeverity);
+                determineDeficiency(RGBSeverity);
                 controller.setResult();
 
                 Scene scene = Variable.getScene();
