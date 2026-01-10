@@ -1,4 +1,4 @@
-# ColoDeficiency 🎨
+# ColorDeficiency 🎨
 
 **ColoDeficiency** is a simple Java-based application for **color vision deficiency testing and simulation**.  
 It allows users to:
