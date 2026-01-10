@@ -10,6 +10,34 @@ The project is written entirely in **pure Java** using **JavaFX**, with no exter
 
 ---
 
+## 📥 Downloads
+
+You can run **ColoDeficiency** without building from source by downloading a prebuilt release:
+
+- ☕ **Java (.jar)**  
+  Recommended if you already have Java installed  
+  👉 [Download JAR](https://drive.google.com/file/d/1Z-FCWEjJfXFx0gCbSYR_7uhjz9GFKNo5/view?usp=drive_link)
+
+- 🪟 **Windows (.exe, zipped)**  
+  Standalone Windows executable (no Java setup required)  
+  👉 [Download EXE (ZIP)](https://drive.google.com/file/d/1Z-FCWEjJfXFx0gCbSYR_7uhjz9GFKNo5/view?usp=sharing)
+
+> If you encounter security warnings on Windows, this is expected for unsigned executables.
+> 
+## 🚀 How to Run
+
+### Option 1: Run Prebuilt Version (Recommended)
+- Download the `.jar` or `.exe` from the **Downloads** section above
+- Extract the `.zip` file
+- find the `Color Deficiency Simulator.exe`
+- Double-click the `.exe`  
+  **or**
+- Run the `.jar` using:
+  ```bash
+  java -jar ColoDeficiency.jar
+
+---
+
 ## ✨ Features
 
 - 🧪 **Color Vision Test**
@@ -81,3 +109,6 @@ fv < 0.04045 ? fv / 12.92 : Math.pow((fv + 0.055) / 1.055, 2.4);
 
 // Linear RGB → sRGB
 v < 0.0031308 ? v * 12.92 : 1.055 * Math.pow(v, 1/2.4) - 0.055;
+
+
+
