@@ -1,6 +1,6 @@
 # ColorDeficiency 🎨
 
-**ColoDeficiency** is a simple Java-based application for **color vision deficiency testing and simulation**.  
+**ColorDeficiency** is a simple Java-based application for **color vision deficiency testing and simulation**.  
 It allows users to:
 - Take an interactive color ordering test
 - Estimate possible color vision deficiencies
@@ -12,7 +12,7 @@ The project is written entirely in **pure Java** using **JavaFX**, with no exter
 
 ## 📥 Downloads
 
-You can run **ColoDeficiency** without building from source by downloading a prebuilt release:
+You can run **ColorDeficiency** without building from source by downloading a prebuilt release:
 
 - ☕ **Java (.jar)**  
   Recommended if you already have Java installed  
