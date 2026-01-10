@@ -1,0 +1,18 @@
+.root {
+    -fx-background-color: #2a2b30; /* Charcoal */
+}
+
+.label {
+    -fx-text-fill: #f8e1e7; /* Light pastel pink */
+}
+
+.button {
+    -fx-background-color: #4a5568; /* Dusty gray-blue */
+    -fx-text-fill: #ffe7d1; /* Soft cream */
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: #687089; /* Gentle lavender-gray */
+}

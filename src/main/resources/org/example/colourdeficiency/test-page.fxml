@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane fx:id="root" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.colourdeficiency.controller.TestPage">
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.colourdeficiency.controller.TestPage">
 
     <VBox alignment="CENTER" spacing="15">
         <padding>
@@ -19,7 +19,7 @@
             </font>
         </Label>
 
-        <Separator opacity="0.0" prefWidth="200.0" />
+        <Separator opacity="0.0" prefHeight="0.0" prefWidth="800.0" />
         <Label text="Sort All The Color (From Left To Right" />
         <Separator disable="true" opacity="0.0" prefWidth="200.0" />
 

@@ -19,7 +19,7 @@ public class MainPage {
     @FXML
     public void initialize() {
         try {
-            Image image = new Image(Objects.requireNonNull(getClass().getResource("/resources/images/menu-logo.png")).toExternalForm());
+            Image image = new Image(Objects.requireNonNull(getClass().getResource("/images/menu-logo.png")).toExternalForm());
             logoImage.setImage(image);
         } catch (Exception ignore) {}
     }

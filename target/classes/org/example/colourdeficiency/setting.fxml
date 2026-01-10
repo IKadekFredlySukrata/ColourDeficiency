@@ -17,6 +17,6 @@
             <ComboBox fx:id="themeComboBox" prefWidth="200"/>
         </HBox>
 
-        <Button fx:id="backButton" text="Back to Menu" onAction="#handleBackToMenu"/>
+        <Button text="Back to Menu" onAction="#handleBackToMenu"/>
     </VBox>
 </AnchorPane>

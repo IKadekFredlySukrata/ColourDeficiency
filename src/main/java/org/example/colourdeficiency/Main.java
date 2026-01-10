@@ -16,8 +16,8 @@ public class Main extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxml = new FXMLLoader(Main.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxml.load(), 1280, 720);
-        scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource("/resources/theme/dark.css")).toExternalForm());
-        Image icon = new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/resources/images/logo.jpeg")));
+        scene.getStylesheets().add(Objects.requireNonNull(Main.class.getResource("/theme/dark.css")).toExternalForm());
+        Image icon = new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/images/logo.jpeg")));
         stage.getIcons().add(icon);
         stage.setTitle("ColorBlind Simulator");
         stage.setScene(scene);

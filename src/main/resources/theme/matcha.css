@@ -1,0 +1,18 @@
+.root {
+    -fx-background-color: #2b3026; /* Dark matcha green */
+}
+
+.label {
+    -fx-text-fill: #cfe0c3; /* Light matcha */
+}
+
+.button {
+    -fx-background-color: #3d4a36; /* Deep green */
+    -fx-text-fill: #dfe8d2; /* Soft matcha */
+    -fx-font-weight: bold;
+    -fx-border-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: #4a5a42; /* Slightly lighter for hover */
+}

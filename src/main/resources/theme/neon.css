@@ -1,0 +1,19 @@
+.root {
+    -fx-background-color: #0f0f0f; /* Deep black */
+}
+
+.label {
+    -fx-text-fill: #39ff14; /* Neon green */
+}
+
+.button {
+    -fx-background-color: #252525; /* Dark gray */
+    -fx-text-fill: #f0f0f0; /* Bright white */
+    -fx-font-weight: bold;
+    -fx-border-color: #39ff14; /* Neon green */
+}
+
+.button:hover {
+    -fx-background-color: #39ff14; /* Full neon green */
+    -fx-text-fill: #0f0f0f; /* Black for contrast */
+}
